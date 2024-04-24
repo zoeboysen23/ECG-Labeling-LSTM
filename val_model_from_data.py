@@ -26,6 +26,13 @@ LABEL_FILE_PATH = '/home/pi/Desktop/val_labels.csv'
 #get the signal and labels 
 val_set_dataset = np.genfromtxt(DATACHUNK_FILE_PATH, delimiter=',')
 val_set_labels  = np.genfromtxt(LABEL_FILE_PATH, delimiter=',')
+# print(val_set_dataset.shape) #three patients with signals of length 2114
+# print(val_set_labels.shape)
+
+patient1_data = val_set_dataset[0][:]
+patient1_labels = val_set_labels[0]
+# print(patient1_data.shape)
+# print(patient1_labels.shape)
 
 #set up the interpreter to read in the tflite model 
 interpreter = tflite.interpreter.Interpreter(model_path=TFLITE_FILE_PATH)
@@ -41,11 +48,11 @@ print("\n Output details: ", output_details)
 input_shape = input_details[0]['shape']
 print("\n Input Shape =" , input_shape)
 
-inp = val_set_dataset.astype(np.float32)
+inp = patient1_data.astype(np.float32)
 print(inp.shape)
 
 #resize data based off the input shape found in the model
-inp = inp.reshape((1,2114,1))
+inp = inp.reshape((input_shape))
 print(inp.shape)
 
 interpreter.set_tensor(input_details[0]['index'], inp)
