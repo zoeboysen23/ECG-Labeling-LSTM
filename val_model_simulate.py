@@ -18,7 +18,7 @@ import neurokit2 as nk                                     # version #version 2.
 
 
 #constants 
-TFLITE_FILE_PATH = '/home/pi/Desktop/better_Carlos.tflite'
+TFLITE_FILE_PATH = '/home/pi/Desktop/2114_model.tflite' #better_Carlos.tflite'
 
 #get the signal and labels 
 #val_set_dataset = np.genfromtxt('/home/pi/Desktop/val_datachunk.csv', delimiter=',')
@@ -43,8 +43,10 @@ print("\n Input Shape =" , input_shape)
 #resize data based off the input shape found in the model
 #loop 900 times for about simulated 30 min
 inp=[]
-for i in range(32):
-    inp.append(nk.ecg_simulate(duration = 2, sampling_rate = 362, heart_rate=80, random_state=i))
+for i in range(input_shape[0]):
+# for 724 singal length : duration = 2, sampling_rate = 362
+# for 2114 signal length : duration = 2, sampling_rate = 1057
+    inp.append(nk.ecg_simulate(duration = 2, sampling_rate = 1057, heart_rate=80, random_state=1))
 #     inp = np.array(inp).astype(np.float32)
 #     inp = inp.reshape((32,724,1))
 #     interpreter.set_tensor(input_details[0]['index'], inp)
@@ -54,11 +56,11 @@ for i in range(32):
 
 inp = np.array(inp).astype(np.float32)
 #resize data based off the input shape found in the model
-inp = inp.reshape((32,724,1))
+inp = inp.reshape((input_shape))
 print(inp.shape)
 
-# interpreter.set_tensor(input_details[0]['index'], inp)
-# interpreter.invoke()
-# output_data = interpreter.get_tensor(output_details[0]['index'])
-# print('\n Output data: ' , output_data)
+interpreter.set_tensor(input_details[0]['index'], inp)
+interpreter.invoke()
+output_data = interpreter.get_tensor(output_details[0]['index'])
+print('\n Output data: ' , output_data)
 
